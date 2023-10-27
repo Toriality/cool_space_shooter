@@ -1,0 +1,69 @@
+[gd_scene load_steps=11 format=3 uid="uid://c03vmfhnpfnit"]
+
+[ext_resource type="Texture2D" uid="uid://d1i3cpdjg0rs6" path="res://sprites/background.jpg" id="1_vla64"]
+[ext_resource type="PackedScene" uid="uid://dtfjxdl48xwon" path="res://scenes/player.tscn" id="2_7faec"]
+[ext_resource type="Script" path="res://scripts/EnemySpawner.gd" id="3_d7lhm"]
+[ext_resource type="PackedScene" uid="uid://drdy8gmjrwkxr" path="res://scenes/enemy.tscn" id="4_yxv07"]
+[ext_resource type="Script" path="res://scripts/ScoreLabel.gd" id="5_c23yv"]
+[ext_resource type="Script" path="res://scripts/GameOver.gd" id="6_kovui"]
+[ext_resource type="AudioStream" uid="uid://s0wj4hinqbnp" path="res://audio/music.wav" id="7_p8ocj"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_lrhji"]
+font_size = 36
+
+[sub_resource type="LabelSettings" id="LabelSettings_bxsvr"]
+font_size = 50
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_rj6mu"]
+size = Vector2(448, 90)
+
+[node name="Main" type="Node2D"]
+
+[node name="Background" type="Sprite2D" parent="."]
+position = Vector2(211.5, 345)
+scale = Vector2(0.254687, 0.685185)
+texture = ExtResource("1_vla64")
+metadata/_edit_lock_ = true
+
+[node name="Player" parent="." instance=ExtResource("2_7faec")]
+
+[node name="EnemySpawner" type="Node2D" parent="."]
+script = ExtResource("3_d7lhm")
+enemy_tscm = ExtResource("4_yxv07")
+
+[node name="Timer" type="Timer" parent="EnemySpawner"]
+autostart = true
+
+[node name="ScoreLabel" type="Label" parent="."]
+offset_right = 40.0
+offset_bottom = 23.0
+text = "Score: 0"
+label_settings = SubResource("LabelSettings_lrhji")
+script = ExtResource("5_c23yv")
+
+[node name="GameOver" type="Label" parent="."]
+visible = false
+offset_right = 425.0
+offset_bottom = 680.0
+size_flags_horizontal = 0
+text = "GAME OVER"
+label_settings = SubResource("LabelSettings_bxsvr")
+horizontal_alignment = 1
+vertical_alignment = 1
+script = ExtResource("6_kovui")
+metadata/_edit_lock_ = true
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("7_p8ocj")
+volume_db = -12.0
+autoplay = true
+bus = &"Music"
+
+[node name="DeadZone" type="Area2D" parent="." groups=["deadzone"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="DeadZone"]
+position = Vector2(211, 667)
+shape = SubResource("RectangleShape2D_rj6mu")
+
+[connection signal="timeout" from="EnemySpawner/Timer" to="EnemySpawner" method="spawn_enemy_ship"]
+[connection signal="area_entered" from="DeadZone" to="DeadZone" method="_on_area_entered"]

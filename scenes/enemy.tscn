@@ -1,0 +1,34 @@
+[gd_scene load_steps=6 format=3 uid="uid://drdy8gmjrwkxr"]
+
+[ext_resource type="Script" path="res://scripts/Enemy.gd" id="1_6bg3h"]
+[ext_resource type="Texture2D" uid="uid://jp2hhqcmxw0m" path="res://sprites/tiny_ship.png" id="2_cgll1"]
+[ext_resource type="AudioStream" uid="uid://cp3w73r5xpt0p" path="res://audio/hit.wav" id="3_e5nqk"]
+[ext_resource type="AudioStream" uid="uid://cd4bmuki61wln" path="res://audio/deadzonehit.wav" id="4_qwser"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_fk4u0"]
+size = Vector2(41, 25)
+
+[node name="Enemy" type="Area2D" groups=["enemy"]]
+position = Vector2(64, 47)
+script = ExtResource("1_6bg3h")
+metadata/_edit_group_ = true
+
+[node name="EnemyGFX" type="Sprite2D" parent="."]
+scale = Vector2(1.5, 1.5)
+texture = ExtResource("2_cgll1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+position = Vector2(2.5, 3.5)
+shape = SubResource("RectangleShape2D_fk4u0")
+
+[node name="HitSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_e5nqk")
+volume_db = -13.0
+bus = &"SFX"
+
+[node name="DeadzoneSound" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("4_qwser")
+volume_db = -18.0
+bus = &"SFX"
+
+[connection signal="area_entered" from="." to="." method="_on_area_entered"]
